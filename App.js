@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import { Navbar } from './src/Navbar';
 import { AddTodo } from './src/AddTodo';
 import { ListItem } from './src/ListItem';
@@ -7,21 +7,27 @@ import { ListItem } from './src/ListItem';
 export default function App() {
   const [listItems, setListItems] = useState([]);
 
-  const addTodo = (title) => {
+  const addItemToList = (title) => {
     setListItems((prev) => [...prev, {
       id: Date.now().toString(),
       title
     }]);
   }
 
+  const deleteItem = (id) => {
+    setListItems(prev => prev.filter(listItems => listItems.id !== id));
+  }
+
   return (
     <View>
       <Navbar title="Todo app" />
       <View style={styles.container}>
-        <AddTodo onSubmit={addTodo} />
-        <View>
-          {listItems.map(({ title, id }) => <ListItem title={title} key={id} />)}
-        </View>
+        <AddTodo onSubmit={addItemToList} />
+        <FlatList
+          keyExtractor={item => item.id}
+          data={listItems}
+          renderItem={({ item }) => <ListItem title={item.title} id={item.id} onRemove={deleteItem} />}
+        />
       </View>
     </View>
   );
