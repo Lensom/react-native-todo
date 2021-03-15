@@ -1,24 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { Navbar } from './src/Navbar';
+import { AddTodo } from './src/AddTodo';
+import { ListItem } from './src/ListItem';
 
 export default function App() {
+  const [listItems, setListItems] = useState([]);
+
+  const addTodo = (title) => {
+    setListItems((prev) => [...prev, {
+      id: Date.now().toString(),
+      title
+    }]);
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Настюха, привет!</Text>
-      <StatusBar style="auto" />
+    <View>
+      <Navbar title="Todo app" />
+      <View style={styles.container}>
+        <AddTodo onSubmit={addTodo} />
+        <View>
+          {listItems.map(({ title, id }) => <ListItem title={title} key={id} />)}
+        </View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#333',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: '#fff'
+    paddingHorizontal: 30,
+    paddingVertical: 20
   }
 });
